@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxGui.h"
 #include "Boid.h"
+#include "School.h"
 
 
 class ofApp : public ofBaseApp{
@@ -32,6 +33,9 @@ class ofApp : public ofBaseApp{
 
 		//GUI
 		ofxPanel gui;
+
+		School school = School();
+		vector<Boid> boids;
 
 
 

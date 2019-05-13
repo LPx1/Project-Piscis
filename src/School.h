@@ -2,6 +2,7 @@
 #include "ofMain.h"
 #include "ofApp.h"
 
+//School (containing a list of all the boids)
 class School {
 	public:
 		vector<Boid> boids; //Collection of all boids 
@@ -10,6 +11,8 @@ class School {
 			for (Boid d : boids)
 			{
 				d.start(boids);
+				printf("%f\n",d.position);
+				//d.draw();
 			}
 		}
 
@@ -17,4 +20,5 @@ class School {
 		{
 			boids.push_back(b);
 		}
+
 };

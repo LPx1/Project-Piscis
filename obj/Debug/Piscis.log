@@ -1,7 +1,5 @@
-﻿  Boid.cpp
-  main.cpp
-  ofApp.cpp
-     Creating library bin\Piscis_debug.lib and object bin\Piscis_debug.exp
+﻿  ofApp.cpp
+c:\users\asian\desktop\of_v0.10.0_vs2017_release\of_v0.10.0_vs2017_release\apps\myapps\piscis\src\school.h(14): warning C4477: 'printf' : format string '%f' requires an argument of type 'double', but variadic argument 1 has type 'glm::vec3'
   Piscis.vcxproj -> C:\Users\asian\Desktop\of_v0.10.0_vs2017_release\of_v0.10.0_vs2017_release\apps\myApps\Piscis\bin\Piscis_debug.exe
   
   	                   2	C:\Users\asian\Desktop\of_v0.10.0_vs2017_release\of_v0.10.0_vs2017_release\libs\fmodex\lib\vs\Win32\
