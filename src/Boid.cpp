@@ -29,16 +29,16 @@ void Boid::addForce(glm::vec3 force)
 //Calculate behavior based on allignment, seperation, cohesion (forces)
 void Boid::group(vector<Boid> boids)
 {
-	glm::vec3 seperation;
+	glm::vec3 sep = seperation(boids);
 	glm::vec3 align = alignment(boids);
 	glm::vec3 cohesion;  
 
-	seperation *= 1.5;
+	sep *= 1.5;
 	align *= 1.0;
 	cohesion *= 1.0;
 
-//	addForce(seperation);
-//	addForce(align);
+	addForce(sep);
+	addForce(align);
 //	addForce(cohesion);
 }
 
@@ -95,13 +95,57 @@ glm::vec3 Boid::alignment(vector<Boid> boids)
 	}
 }
 
-//Calculates the distance between each 
+//Calculates the distance between nearby boids and steers away
 glm::vec3 Boid::seperation(vector<Boid> boids)
 {
+	seperationWeight = 25;
+	glm::vec3 steering = glm::vec3(0, 0, 0);
+	int count = 0; 
+	for (Boid i : boids)
+	{
+		float distance = glm::distance(i.position, position);
+		if ((distance > 0) && (distance < seperationWeight))
+		{
+			glm::vec3 difference = i.position - position; // Other boids position - the current boid's position
+			difference = glm::normalize(difference);
+			difference = difference / distance;
+			steering += difference;
+			count++;
+		}
+	}
+	//get the average
+	if (count > 0)
+	{
+		steering /= count;
+	}
 
+	float mag = pow(steering.x, 2) + pow(steering.y, 2) + pow(steering.z, 2);
 
+	if (mag > 0) //************Getting magnitude of a vector
+	{
+		steering = glm::normalize(steering);
+		steering = (steering * maxVelocity) - velocity;
 
-	return glm::vec3(0, 0, 0);
+		if (steering.x > maxAccel)
+		{
+			steering.x -= maxAccel;
+
+		}
+		if (steering.y > maxAccel)
+		{
+			steering.y -= maxAccel;
+		}
+		if (steering.z > maxAccel)
+		{
+			steering.z -= maxAccel;
+		}
+
+		return steering;
+	}
+	else
+	{
+		return glm::vec3(0, 0, 0);
+	}
 
 }
 

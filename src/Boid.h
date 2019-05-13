@@ -26,9 +26,9 @@ class Boid {
 
 		Boid() {
 			srand(time(NULL));
-			float x = (rand() % 5);
-			float y = (rand() % 5);
-			float z = (rand() % 5);
+			float x = (rand() % 20);
+			float y = (rand() % 20);
+			float z = (rand() % 20);
 
 			// Will randomize the spawning location of the boids (rand() % 3);
 			position = glm::vec3(x, y, z);
