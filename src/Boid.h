@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofApp.h"
+#include "time.h"
 
 class Boid {
 	public:
@@ -13,7 +14,7 @@ class Boid {
 		glm::vec3 pivot = glm::vec3(0, 0, 0);		// rotate pivot
 
 
-		float r = 2; 
+		float r = 20; 
 		float maxAccel;
 		float maxVelocity;
 
@@ -26,16 +27,16 @@ class Boid {
 
 		Boid() {
 			srand(time(NULL));
-			float x = (rand() % 20);
-			float y = (rand() % 20);
-			float z = (rand() % 20);
+			float x = (rand() % 2 + (4));
+			float y = (rand() % 2 + (4));
+			float z = (rand() % 2 + (4));
 
 			// Will randomize the spawning location of the boids (rand() % 3);
 			position = glm::vec3(x, y, z);
 			acceleration = glm::vec3(0, 0, 0);
 			velocity = glm::vec3(glm::cos(x), glm::sin(y), glm::cos(z));
 
-			maxVelocity = 2; //How fast each boid can move
+			maxVelocity = 1; //How fast each boid can move
 			maxAccel = 0.04; //How fast each boid can change its direction
 		}
 
@@ -44,6 +45,7 @@ class Boid {
 		void draw(); 
 		void update();
 		void boundary();
+		glm::vec3 seek(glm::vec3 target);
 		void Boid::group(vector<Boid> boids);		
 		glm::vec3 alignment(vector<Boid> boids);
 		glm::vec3 seperation(vector<Boid> boids);

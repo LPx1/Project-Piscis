@@ -37,7 +37,7 @@ class ofApp : public ofBaseApp{
 		School school = School();
 		vector<Boid> boids;
 
-
+		glm::vec3 pos;
 
 		
 };

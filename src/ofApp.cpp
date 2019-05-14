@@ -4,21 +4,24 @@
 void ofApp::setup(){
 
 
-
+	ofSetFrameRate(60);
 	ofSetBackgroundColor(ofColor::lightSkyBlue);
-	mainCamera.setDistance(15);
+	mainCamera.setDistance(50);
 	mainCamera.setNearClip(.05);
 
 	theCamera = &mainCamera;
+
+	pos = glm::vec3(0, 0, 0); // testing real time 
 
 	//GUI
 //	sc.addBoid(Boid());
 //	boids.push_back(new Boid());
 
-	for (int i = 0; i < 30; i++) {
-		school.addBoid(Boid());
-	}
+	//for (int i = 0; i <= 30; i++) {
+	//	school.addBoid(Boid());
+	//}
 
+	printf("%d", school.boids.size());
 
 //	school.boids[0].setPosition(glm::vec3(1, 0, 0));
 //	school.boids[0].rotation = glm::vec3(0, 1, 1);
@@ -27,7 +30,11 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+	//pos += glm::vec3(1, 0, 0);
 
+	for (int i = 1; i < school.boids.size(); i++) {
+		school.boids[i].start(school.boids);
+	}
 }
 
 //--------------------------------------------------------------
@@ -49,7 +56,14 @@ void ofApp::draw(){
 	//}
 
 //	sc.run();
-	school.run();
+
+//	ofDrawSphere(pos, 1);
+//	school.run();
+
+	for (int i = 1; i < school.boids.size() ; i++) {
+		ofSetColor(ofColor::red);
+		school.boids[i].draw();
+	}
 
 
 
@@ -63,7 +77,7 @@ void ofApp::keyPressed(int key){
 	case ' ':
 		//boids.push_back(new Boid());
 		school.addBoid(Boid());
-		printf("New boid \n");
+		printf("%d \n", school.boids.size());
 		break;
 	}
 }

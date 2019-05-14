@@ -10,9 +10,9 @@ class School {
 		void run() { //Passes the entire list of boids to each boid
 			for (Boid d : boids)
 			{
-				d.start(boids);
-				printf("%f\n",d.position);
-				//d.draw();
+				//d.start(boids);
+				//printf("%f\n",d.position);
+				d.draw();
 			}
 		}
 
