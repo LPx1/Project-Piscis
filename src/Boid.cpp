@@ -8,20 +8,35 @@ void Boid::start(vector<Boid> boids)
 	group(boids);
 	update();
 	boundary();
-	// Check the boundaries 
-//	draw();
-//	printf("Called \n");
+
 }
 
 void Boid::draw()
 {
-	ofDrawSphere(position, 1);
+
+
+	ofDrawSphere(position, 2);
 	//float theta = velocity.length Require the velocity's heading  ***********
 	//ofDrawCone(position, 1, 3);
 
 }
 
+float Boid::mag(glm::vec3 vector)
+{
+	return 	sqrt(vector.x*vector.x + vector.y*vector.y + vector.z*vector.z);
+}
 
+glm::vec3 Boid::limit(glm::vec3 vector, float value)
+{
+	if (mag(vector) > value)
+	{
+		vector = glm::normalize(vector);
+
+		vector *= value;
+	}
+
+	return vector;
+}
 
 void Boid::addForce(glm::vec3 force)
 {
@@ -35,7 +50,7 @@ void Boid::group(vector<Boid> boids)
 	glm::vec3 align = alignment(boids);
 	glm::vec3 cohe = cohesion(boids);
 
-	sep *= 1.0;
+	sep *= 1.25;
 	align *= 1.0;
 	cohe *= 1.0;
 
@@ -46,12 +61,12 @@ void Boid::group(vector<Boid> boids)
 
 void Boid::boundary() //Wraparound meaning itll come back the other side
 {
-	if (position.x < -r) position.x = 200 + r;
-	if (position.y < -r) position.y = 200 + r;
-	if (position.z < -r) position.z = 200 + r;
-	if (position.x > 200 + r) position.x = -r;
-	if (position.y > 200 + r) position.y = -r;
-	if (position.z > 200 + r) position.z = -r;
+	if (position.x < -200) position.x = 200 ;
+	if (position.y < -200) position.y = 200 ;
+	if (position.z < -200) position.z = 200 ;
+	if (position.x > 200 ) position.x = -200;
+	if (position.y > 200 ) position.y = -200;
+	if (position.z > 200 ) position.z = -200;
 }
 
 void Boid::update()
@@ -59,36 +74,18 @@ void Boid::update()
 	//Update velocity
 	velocity += acceleration;
 
-	//if (velocity.length > maxVelocity)
-//{
-//	velocity.x =+
-//}
-	//^^^^
-	// Slow down the velocity when it hits maxVelocity
-
-	if (velocity.x > maxVelocity)
-	{
-		velocity.x = maxVelocity;
-
-	}
-	if (velocity.y > maxVelocity)
-	{
-		velocity.y = maxVelocity;
-	}
-	if (velocity.z > maxVelocity)
-	{
-		velocity.z = maxVelocity;
-	}
-
+	// Limit speed
+	velocity = limit(velocity, maxVelocity);
 	position += velocity;
 
-	acceleration *= glm::vec3(0, 0, 0);
+	acceleration *= 0;
+
 }
 
 // Calculate the average velocity of each nearby boid
 glm::vec3 Boid::alignment(vector<Boid> boids) 
 {
-	float neighbor = 50;
+	float neighbor = 20;
 	glm::vec3 sum = glm::vec3(0, 0, 0);
 	int count = 0;
 
@@ -109,22 +106,7 @@ glm::vec3 Boid::alignment(vector<Boid> boids)
 		norm *= maxVelocity;
 		glm::vec3 steering = norm - velocity;
 
-		if (steering.x > maxAccel)
-		{
-			steering.x = maxAccel;
-
-		}
-		if (steering.y > maxAccel)
-		{
-			steering.y = maxAccel;
-		}
-		if (steering.z > maxAccel)
-		{
-			steering.z = maxAccel;
-		}
-
-
-		return steering;
+		return limit(steering,maxAccel);
 	}
 	else
 	{
@@ -135,15 +117,18 @@ glm::vec3 Boid::alignment(vector<Boid> boids)
 //Calculates the distance between nearby boids and steers away
 glm::vec3 Boid::seperation(vector<Boid> boids)
 {
-	seperationWeight = 25;
+	seperationWeight = 10;
 	glm::vec3 steering = glm::vec3(0, 0, 0);
 	int count = 0; 
+
 	for (Boid i : boids)
 	{
 		float distance = glm::distance(i.position, position);
+
 		if ((distance > 0) && (distance < seperationWeight))
 		{
-			glm::vec3 difference = i.position - position; // Other boids position - the current boid's position
+			glm::vec3 difference = position - i.position; // Other boids position - the current boid's position
+			
 			difference = glm::normalize(difference);
 			difference = difference / distance;
 			steering += difference;
@@ -156,53 +141,58 @@ glm::vec3 Boid::seperation(vector<Boid> boids)
 		steering /= count;
 	}
 
-	float mag = pow(steering.x, 2) + pow(steering.y, 2) + pow(steering.z, 2);
+	return steering;
 
-	if (mag > 0) //************Getting magnitude of a vector
-	{
-		steering = glm::normalize(steering);
-		steering = (steering * maxVelocity) - velocity;
-
-		if (steering.x > maxAccel)
-		{
-			steering.x -= maxAccel;
-
-		}
-		if (steering.y > maxAccel)
-		{
-			steering.y -= maxAccel;
-		}
-		if (steering.z > maxAccel)
-		{
-			steering.z -= maxAccel;
-		}
-
-		return steering;
-	}
-	else
-	{
-		return glm::vec3(0, 0, 0);
-	}
 
 }
 
 //Calculates and applies steering force towards target location
 glm::vec3 Boid::seek(glm::vec3 target)
 {
+	glm::vec3 steering;
+	//Vector pointing from the position of the boid to the target location 
 	glm::vec3 desired = target - position;
-	desired = glm::normalize(desired);
-	desired *= maxVelocity;
 
-	glm::vec3 steering = desired - velocity;
+	float distance = mag(desired);
+
+//	float distance = glm::distance(desired, position);
+
+	if (distance > 0)
+	{
+		desired = glm::normalize(desired);
+
+		if (distance < 100)
+		{
+			desired *= (maxVelocity * ( distance/100));
+		}
+		else
+		{
+			desired *= maxVelocity;
+
+			
+		}
+
+		glm::vec3 steering = desired - velocity;
+
+		//steering = limit(steering, maxAccel);
+	}
+	else
+	{
+		glm::vec3 steering = glm::vec3(0, 0, 0);
+	}
+
 	return steering;
+
 }
 
 //Calculates the steering vector towards that position 
 glm::vec3 Boid::cohesion(vector<Boid> boids)
 {
-	cohesionWeight = 50;
+	cohesionWeight = 20;
+
 	glm::vec3 sum = glm::vec3(0, 0, 0);
 	int count = 0;
+
 	for (Boid i : boids)
 	{
 		float distance = glm::distance(i.position, position);

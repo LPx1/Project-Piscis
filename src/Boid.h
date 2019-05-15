@@ -37,7 +37,7 @@ class Boid {
 			velocity = glm::vec3(glm::cos(x), glm::sin(y), glm::cos(z));
 
 			maxVelocity = 1; //How fast each boid can move
-			maxAccel = 0.04; //How fast each boid can change its direction
+			maxAccel = 0.75; //How fast each boid can change its direction
 		}
 
 		void start(vector<Boid> boids);
@@ -45,6 +45,8 @@ class Boid {
 		void draw(); 
 		void update();
 		void boundary();
+		float mag(glm::vec3 vector);
+		glm::vec3 limit(glm::vec3 vector,float value);
 		glm::vec3 seek(glm::vec3 target);
 		void Boid::group(vector<Boid> boids);		
 		glm::vec3 alignment(vector<Boid> boids);
