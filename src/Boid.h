@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofApp.h"
-#include "time.h"
+
 
 class Boid {
 	public:
@@ -46,12 +46,14 @@ class Boid {
 		void update();
 		void boundary();
 		float mag(glm::vec3 vector);
+		float heading3D(glm::vec3 vector);
 		glm::vec3 limit(glm::vec3 vector,float value);
 		glm::vec3 seek(glm::vec3 target);
 		void Boid::group(vector<Boid> boids);		
 		glm::vec3 alignment(vector<Boid> boids);
 		glm::vec3 seperation(vector<Boid> boids);
 		glm::vec3 cohesion(vector<Boid> boids);
+		glm::mat3 lookAtMatrix(const glm::vec3 &pos, const glm::vec3 &aimPos, glm::vec3 upVector);
 
 		// commonly used transformations
 	//

@@ -1,13 +1,20 @@
 
 #include "ofApp.h"
 #include "Boid.h"
+#include "ofMath.h"
 
 void Boid::start(vector<Boid> boids)
 {
-
+	ofPushMatrix();
 	group(boids);
 	update();
 	boundary();
+	glm::mat4 theta = lookAtMatrix(position, velocity, glm::vec3(0, 1, 0));
+
+//	printf("%f, %f, %f \n", velocity.x, velocity.y, velocity.z);
+
+	ofMultMatrix(theta);
+	ofPopMatrix();
 
 }
 
@@ -15,9 +22,11 @@ void Boid::draw()
 {
 
 
-	ofDrawSphere(position, 2);
+	//ofDrawSphere(position, 2);
 	//float theta = velocity.length Require the velocity's heading  ***********
-	//ofDrawCone(position, 1, 3);
+
+	ofDrawCone(position, 1, 3); 
+	
 
 }
 
@@ -36,6 +45,38 @@ glm::vec3 Boid::limit(glm::vec3 vector, float value)
 	}
 
 	return vector;
+}
+
+glm::mat3 Boid::lookAtMatrix(const glm::vec3 &pos, const glm::vec3 &aimPos, glm::vec3 upVector) {
+	glm::mat4 m;
+	// your code goes here
+
+	glm::vec3 zAxis = glm::normalize(pos - aimPos); //dir
+	glm::vec3 xAxis = glm::normalize(glm::cross(glm::normalize(upVector), zAxis)); //right
+	glm::vec3 yAxis = glm::cross(zAxis, xAxis); //newUp
+
+	m[0][0] = xAxis.x;
+	m[0][1] = xAxis.y;
+	m[0][2] = xAxis.z;
+	m[0][3] = 0;
+
+	m[1][0] = yAxis.x;
+	m[1][1] = yAxis.y;
+	m[1][2] = yAxis.z;
+	m[1][3] = 0;
+
+	m[2][0] = zAxis.x;
+	m[2][1] = zAxis.y;
+	m[2][2] = zAxis.z;
+	m[2][3] = 0;
+
+	m[3][0] = pos.x;
+	m[3][1] = pos.y;
+	m[3][2] = pos.z;
+	m[3][3] = 1;
+
+
+	return m;
 }
 
 void Boid::addForce(glm::vec3 force)
@@ -62,11 +103,11 @@ void Boid::group(vector<Boid> boids)
 void Boid::boundary() //Wraparound meaning itll come back the other side
 {
 	if (position.x < -200) position.x = 200 ;
-	if (position.y < -200) position.y = 200 ;
-	if (position.z < -200) position.z = 200 ;
-	if (position.x > 200 ) position.x = -200;
-	if (position.y > 200 ) position.y = -200;
-	if (position.z > 200 ) position.z = -200;
+	else if (position.y < -200) position.y = 200 ;
+	else if (position.z < -200) position.z = 200 ;
+	else if (position.x > 200 ) position.x = -200;
+	else if (position.y > 200 ) position.y = -200;
+	else if (position.z > 200 ) position.z = -200;
 }
 
 void Boid::update()
@@ -105,6 +146,7 @@ glm::vec3 Boid::alignment(vector<Boid> boids)
 		glm::vec3 norm = glm::normalize(sum);
 		norm *= maxVelocity;
 		glm::vec3 steering = norm - velocity;
+
 
 		return limit(steering,maxAccel);
 	}

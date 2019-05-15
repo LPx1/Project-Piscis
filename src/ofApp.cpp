@@ -1,4 +1,6 @@
 #include "ofApp.h"
+#include "time.h"
+#include "ofMath.h"
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -17,9 +19,9 @@ void ofApp::setup(){
 //	sc.addBoid(Boid());
 //	boids.push_back(new Boid());
 
-	//for (int i = 0; i <= 30; i++) {
-	//	school.addBoid(Boid());
-	//}
+	for (int i = 0; i <= 30; i++) {
+		school.addBoid(Boid());
+	}
 
 	printf("%d", school.boids.size());
 
