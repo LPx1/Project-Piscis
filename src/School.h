@@ -6,6 +6,7 @@
 class School {
 	public:
 		vector<Boid> boids; //Collection of all boids 
+		vector<Predator> predators;
 
 		void run() { //Passes the entire list of boids to each boid
 			for (Boid d : boids)
@@ -14,11 +15,21 @@ class School {
 				//printf("%f\n",d.position);
 				d.draw();
 			}
+			for (Predator d : predators)
+			{
+				d.draw();
+			}
 		}
 
 		void addBoid(Boid b)
 		{
 			boids.push_back(b);
+		}
+
+		void addPred(Predator d)
+		{
+			predators.push_back(d);
+
 		}
 
 };

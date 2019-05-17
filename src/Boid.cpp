@@ -10,25 +10,14 @@ void Boid::start(vector<Boid> boids)
 	update();
 	boundary();
 
-
-//	printf("%f, %f, %f \n", velocity.x, velocity.y, velocity.z);
-
-
 }
 
 void Boid::draw()
 {
-
-
-	//ofDrawSphere(position, 2);
-	//float theta = velocity.length Require the velocity's heading  ***********
-
-
 	
 	ofPushMatrix();
 	glm::mat4 theta = lookAtMatrix(position, velocity, glm::vec3(0, 1, 0));
 	ofMultMatrix(theta);
-	ofRotate(90, 1, 0, 0);
 	ofDrawCone(position, 3, 8);
 	ofPopMatrix();
 
@@ -53,7 +42,6 @@ glm::vec3 Boid::limit(glm::vec3 vector, float value)
 
 glm::mat3 Boid::lookAtMatrix(const glm::vec3 &pos, const glm::vec3 &aimPos, glm::vec3 upVector) {
 	glm::mat4 m;
-	// your code goes here
 
 	glm::vec3 zAxis = glm::normalize(pos - aimPos); //dir
 	glm::vec3 xAxis = glm::normalize(glm::cross(glm::normalize(upVector), zAxis)); //right
@@ -201,8 +189,6 @@ glm::vec3 Boid::seek(glm::vec3 target)
 
 	float distance = mag(desired);
 
-//	float distance = glm::distance(desired, position);
-
 	if (distance > 0)
 	{
 		desired = glm::normalize(desired);
@@ -220,7 +206,6 @@ glm::vec3 Boid::seek(glm::vec3 target)
 
 		glm::vec3 steering = desired - velocity;
 
-		//steering = limit(steering, maxAccel);
 	}
 	else
 	{
@@ -235,7 +220,6 @@ glm::vec3 Boid::seek(glm::vec3 target)
 glm::vec3 Boid::cohesion(vector<Boid> boids)
 {
 	cohesionWeight = 20;
-
 	glm::vec3 sum = glm::vec3(0, 0, 0);
 	int count = 0;
 
@@ -258,5 +242,7 @@ glm::vec3 Boid::cohesion(vector<Boid> boids)
 		return glm::vec3(0, 0, 0);
 	}
 }
+
+
 
 

@@ -19,8 +19,19 @@ void ofApp::setup(){
 //	sc.addBoid(Boid());
 //	boids.push_back(new Boid());
 
+
+
+
+
 	for (int i = 0; i <= 30; i++) {
+
+		srand(time(NULL));
+		int random = (rand() % 10); //Will select a random color from list of colors 
+
+//		ofSetColor(colors[random]);
+
 		school.addBoid(Boid());
+		school.boids[i].myColor = colors[random];
 	}
 
 	printf("%d", school.boids.size());
@@ -34,9 +45,13 @@ void ofApp::setup(){
 void ofApp::update(){
 	//pos += glm::vec3(1, 0, 0);
 
-	for (int i = 1; i < school.boids.size(); i++) {
+	for (int i = 0; i < school.boids.size(); i++) {
 		school.boids[i].start(school.boids);
 	}
+
+	//for (int i = 0; i < school.predators.size(); i++) {
+	//	school.predators[i].start(school.boids);
+	//}
 }
 
 //--------------------------------------------------------------
@@ -63,17 +78,14 @@ void ofApp::draw(){
 //	school.run();
 
 	for (int i = 1; i < school.boids.size() ; i++) {
-
-		ofColor colors[10] = { ofColor::blue, ofColor::red, ofColor::green,
-								ofColor::purple, ofColor::gold, ofColor::magenta,
-	ofColor::teal, ofColor::blueSteel, ofColor::orangeRed, ofColor::oliveDrab };
-
-		srand(time(NULL));
-		int random = (rand() % 10); //Will select a random color from list of colors 
-
-		ofSetColor(ofColor::red);
+		ofSetColor(school.boids[i].myColor);
 		school.boids[i].draw();
 	}
+
+	//for (int i = 0; i < school.predators.size(); i++) {
+	//	ofSetColor(school.predators[i].myColor);
+	//	school.predators[i].draw();
+	//}
 
 
 
@@ -82,14 +94,27 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+	int random = 0;
+
 	switch (key)
 	{
 	case ' ':
 		//boids.push_back(new Boid());
 		school.addBoid(Boid());
+		srand(time(NULL));
+		random = (rand() % 10); //Will select a random color from list of colors 
+
+		school.boids[school.boids.size() - 1].myColor = colors[random];
+
 		printf("%d \n", school.boids.size());
 		break;
+	case 'Z':
+	case 'z':
+		school.addPred(Predator());
+		break;
 	}
+
+
 }
 
 //--------------------------------------------------------------

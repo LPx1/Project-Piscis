@@ -39,5 +39,7 @@ class ofApp : public ofBaseApp{
 
 		glm::vec3 pos;
 
+		ofColor colors[10] = { ofColor::blue, ofColor::red, ofColor::greenYellow, ofColor::hotPink, 
+			ofColor::gold, ofColor::white, ofColor::cyan, ofColor::orange, ofColor::mediumPurple, ofColor::black };
 		
 };

@@ -24,6 +24,8 @@ class Boid {
 		float alighWeight;
 		float cohesionWeight;
 
+		ofColor myColor;
+
 
 		Boid() {
 			srand(time(NULL));
@@ -53,6 +55,7 @@ class Boid {
 		glm::vec3 alignment(vector<Boid> boids);
 		glm::vec3 seperation(vector<Boid> boids);
 		glm::vec3 cohesion(vector<Boid> boids);
+		glm::vec3 flee(vector<Boid> enemy);
 		glm::mat3 lookAtMatrix(const glm::vec3 &pos, const glm::vec3 &aimPos, glm::vec3 upVector);
 
 		// commonly used transformations
@@ -113,6 +116,103 @@ class Boid {
 			return glm::toMat4(q);
 		}
 
+
+
+};
+
+class Predator : public Boid
+{
+	public:
+
+	Predator()
+	{
+		srand(time(NULL));
+		float x = (rand() % 2 + (4));
+		float y = (rand() % 2 + (4));
+		float z = (rand() % 2 + (4));
+
+		// Will randomize the spawning location of the boids (rand() % 3);
+		position = glm::vec3(x, y, z);
+		acceleration = glm::vec3(0, 0, 0);
+		velocity = glm::vec3(glm::cos(x), glm::sin(y), glm::cos(z));
+
+		maxVelocity = 3; //How fast each boid can move
+		maxAccel = 0.75; //How fast each boid can change its direction
+			
+	}
+
+	float maxAccel = 10;
+
+	ofColor myColor = ofColor::red;
+
+
+
+	void start(vector<Boid> boids)
+	{
+		group(boids);
+		printf("%f, %f, %f", position.x, position.y, position.z);
+		update();
+		boundary();
+	}
+
+	void draw()
+	{
+		ofSetColor(ofColor::red);
+		ofDrawSphere(position, 5);
+	}
+
+	void group(vector<Boid> boids1)
+	{
+		glm::vec3 hunt = chase(boids1);
+
+		addForce(hunt);
+
+	}
+
+	void update()
+	{
+		//Update velocity
+		velocity += acceleration;
+
+		// Limit speed
+		velocity = limit(velocity, maxVelocity);
+		position += velocity;
+
+		acceleration *= 0;
+
+	}
+
+	glm::vec3 chase(vector<Boid> boids)
+	{
+		float chaseWeight = 100;
+		glm::vec3 sum = glm::vec3(0, 0, 0);
+		int count = 0;
+
+		for (Boid i : boids)
+		{
+			float distance = glm::distance(i.position, position);
+			distance = mag(i.position - position);
+
+			//If the distance between the predator is not 0 then FASTER
+			if ((distance != 0) && ( distance < chaseWeight ))
+			{
+				sum += i.position;
+				count++;
+			}
+		}
+
+		if (count > 0)
+		{
+			sum /= count;
+			glm::vec3 approachVec = sum - position;
+			approachVec = limit(approachVec, maxAccel);
+			return approachVec;
+		}
+		else
+		{
+			return glm::vec3(0, 0, 0);
+		}
+	}
 
 
 };
