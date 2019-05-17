@@ -5,16 +5,14 @@
 
 void Boid::start(vector<Boid> boids)
 {
-	ofPushMatrix();
+
 	group(boids);
 	update();
 	boundary();
-	glm::mat4 theta = lookAtMatrix(position, velocity, glm::vec3(0, 1, 0));
+
 
 //	printf("%f, %f, %f \n", velocity.x, velocity.y, velocity.z);
 
-	ofMultMatrix(theta);
-	ofPopMatrix();
 
 }
 
@@ -25,8 +23,14 @@ void Boid::draw()
 	//ofDrawSphere(position, 2);
 	//float theta = velocity.length Require the velocity's heading  ***********
 
-	ofDrawCone(position, 1, 3); 
+
 	
+	ofPushMatrix();
+	glm::mat4 theta = lookAtMatrix(position, velocity, glm::vec3(0, 1, 0));
+	ofMultMatrix(theta);
+	ofRotate(90, 1, 0, 0);
+	ofDrawCone(position, 3, 8);
+	ofPopMatrix();
 
 }
 

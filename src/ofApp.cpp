@@ -63,6 +63,14 @@ void ofApp::draw(){
 //	school.run();
 
 	for (int i = 1; i < school.boids.size() ; i++) {
+
+		ofColor colors[10] = { ofColor::blue, ofColor::red, ofColor::green,
+								ofColor::purple, ofColor::gold, ofColor::magenta,
+	ofColor::teal, ofColor::blueSteel, ofColor::orangeRed, ofColor::oliveDrab };
+
+		srand(time(NULL));
+		int random = (rand() % 10); //Will select a random color from list of colors 
+
 		ofSetColor(ofColor::red);
 		school.boids[i].draw();
 	}
